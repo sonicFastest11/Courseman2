@@ -119,6 +119,7 @@ public class CourseController {
 	public ModelAndView editCourse(HttpServletRequest request) {
 		int courseId = Integer.parseInt(request.getParameter("id"));
 		Course course = courseService.get(courseId);
+		course.setIdUser(course.getUserid().getId());
 		ModelAndView model = new ModelAndView("admin/course/courseEditForm");
 		model.addObject("course", course);
 

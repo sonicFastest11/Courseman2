@@ -1,7 +1,7 @@
 package com.gmo.controller.admin;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +54,7 @@ public class HomeController {
 			HttpSession session) throws Exception {
 		Map<String, String> hashMap = new HashMap<>();
 		// kiểm tra username và password
-		if (userService.checkLogin(user.getUsername(), decryptPass(user.getPassword()))) {
+		if (userService.checkLogin(user.getUsername(), encryptPass(user.getPassword()).concat("a"))) {
 			// lấy quyền của user
 			String role = userService.checkRole(user.getUsername()).getRoleid().getRole_name();
 			//lấy id của user
@@ -108,19 +108,19 @@ public class HomeController {
 		return "admin/home/403";
 	}
 
-	// giải mã password
-	public static String decryptPass(String passwordMD5) throws Exception {
-		String password = null;
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		md.update(passwordMD5.getBytes());
-		byte[] byteData = md.digest();
+	// mã hóa password
+		public static String encryptPass(String passwordMD5) throws Exception {
+			String password = null;
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			byte[] hashInBytes = md.digest(passwordMD5.getBytes(StandardCharsets.UTF_8));
 
-		StringBuilder sb = new StringBuilder(32);
-		for (byte b : byteData) {
-			sb.append(String.format("%02x", b & 0xff));
+			// bytes to hex
+			StringBuilder sb = new StringBuilder();
+			for (byte b : hashInBytes) {
+				sb.append(String.format("%02x", b));
+			}
 			password = sb.toString();
+			return password;
 		}
-		return password;
-	}
 
 }

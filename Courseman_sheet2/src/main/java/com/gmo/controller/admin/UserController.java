@@ -2,6 +2,7 @@ package com.gmo.controller.admin;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
@@ -115,6 +116,7 @@ public class UserController {
 	@RequestMapping(value = "/updateUser", method = RequestMethod.POST)
 	public ModelAndView updateUser(@ModelAttribute Users user) {
 		Role role = roleService.get(user.getIdRole());
+
 		userService.updateUser(role, user.getUsername());
 		return new ModelAndView("redirect:/userList");
 
@@ -125,6 +127,7 @@ public class UserController {
 	public ModelAndView editUser(HttpServletRequest request) {
 		int userId = Integer.parseInt(request.getParameter("id"));
 		Users user = userService.get(userId);
+		user.setIdRole(user.getRoleid().getId());
 		ModelAndView model = new ModelAndView("admin/user/userEditForm");
 		model.addObject("user", user);
 
@@ -202,16 +205,15 @@ public class UserController {
 	// mã hóa password
 	public static String encryptPass(String passwordMD5) throws Exception {
 		String password = null;
-		MessageDigest md = MessageDigest.getInstance("MD5");
-		md.update(passwordMD5.getBytes());
-		byte[] byteData = md.digest();
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		byte[] hashInBytes = md.digest(passwordMD5.getBytes(StandardCharsets.UTF_8));
 
-		StringBuilder sb = new StringBuilder(32);
-		for (byte b : byteData) {
-			sb.append(String.format("%02x", b & 0xff));
-			password = sb.toString();
-
+		// bytes to hex
+		StringBuilder sb = new StringBuilder();
+		for (byte b : hashInBytes) {
+			sb.append(String.format("%02x", b));
 		}
+		password = sb.toString();
 		return password;
 	}
 }
