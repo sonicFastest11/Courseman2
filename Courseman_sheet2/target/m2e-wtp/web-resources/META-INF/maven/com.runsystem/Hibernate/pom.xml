@@ -6,7 +6,7 @@
 	<artifactId>Hibernate</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>SpringMVCHibernateCRUD Maven Webapp</name>
+	<name>Courseman_sheet2</name>
 	<url>http://maven.apache.org</url>
 	<dependencies>
 
@@ -203,6 +203,17 @@
 
 	</dependencies>
 	<build>
-		<finalName>SpringMVCHibernateCRUD</finalName>
+		<finalName>Courseman_sheet2</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>

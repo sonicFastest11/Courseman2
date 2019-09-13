@@ -1,0 +1,84 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+       http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- <mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/newRole" />
+			<mvc:mapping path="/userList" />
+			<mvc:mapping path="/addUser" />
+			<mvc:mapping path="/loadallrole" />
+			<mvc:mapping path="/newCourse" />
+			<mvc:mapping path="/courseList" />
+			<mvc:mapping path="/importPage" />
+			<mvc:mapping path="/enrolmentList" />
+			<bean class="com.gmo.interceptor.MyInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors> -->
+
+	<context:component-scan base-package="com.gmo.*"></context:component-scan>
+	<mvc:annotation-driven />
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/views/"></property>
+		<property name="suffix" value=".jsp"></property>
+		<property name="contentType" value="text/html;charset=UTF-8"></property>
+	</bean>
+	<!-- Getting Database properties -->
+	<!-- <context:property-placeholder
+		location="classpath:application.properties" /> -->
+
+
+	<mvc:resources mapping="/template/**"
+		location="/template/" cache-period="31556926" />
+
+
+
+	<!-- DataSource -->
+	<bean
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		id="dataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="url" value="jdbc:mysql://localhost:3306/sheet2"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="root123"></property>
+	</bean>
+
+	<!-- Hibernate SessionFactory -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.show_sql">true}</prop>
+			</props>
+
+		</property>
+		<property name="packagesToScan" value="com.gmo.model"></property>
+		<!-- <mapping class="com.gmo.model.Users"/> <mapping class="com.gmo.model.Course"/> -->
+
+	</bean>
+
+	<!-- Transaction -->
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="268435456" />
+	</bean>
+	
+</beans>
+ 

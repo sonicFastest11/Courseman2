@@ -53,9 +53,13 @@ public class HomeController {
 	public ModelAndView checkLogin(@ModelAttribute("user") Users user, ModelAndView model, HttpServletRequest rq,
 			HttpSession session) throws Exception {
 		Map<String, String> hashMap = new HashMap<>();
+		// kiểm tra username và password
 		if (userService.checkLogin(user.getUsername(), decryptPass(user.getPassword()))) {
+			// lấy quyền của user
 			String role = userService.checkRole(user.getUsername()).getRoleid().getRole_name();
+			//lấy id của user
 			int userid = userService.checkRole(user.getUsername()).getId();
+			//truy cập trang chủ
 			if ("ADMIN".equals(userService.checkRole(user.getUsername()).getRoleid().getRole_name())) {
 				hashMap.put("loadallrole", "List of Roles");
 				hashMap.put("userList", "List of Users");
@@ -69,19 +73,16 @@ public class HomeController {
 				hashMap.put("courses", "List of Courses");
 				model.addObject("menu", hashMap);
 			}
+			//dùng session để lưu user,name,menu
 			session.setAttribute("user", user);
 			session.setAttribute("userid", userid);
 			session.setAttribute("role", role);
 
-//			System.err.println(userid);
 			session.setAttribute("name", user.getUsername());
-//			System.err.println(session.getAttribute("name"));
 			session.setAttribute("menu", hashMap);
-			if (session.getAttribute("user") != null) {
-				System.out.println("contain user");
-			}
+			
+			//trả về trang chủ
 			model.setViewName("admin/home/home");
-			model.addObject("message", user.getUsername());
 			return model;
 		} else {
 			model.setViewName("admin/home/login");
@@ -97,10 +98,7 @@ public class HomeController {
 		session.removeAttribute("user");
 		session.removeAttribute("name");
 		session.removeAttribute("menu");
-		if (session.getAttribute("user") == null) {
-			System.out.println("delete user session!");
-		}
-
+		
 		return new ModelAndView("redirect:/trang-chu");
 	}
 

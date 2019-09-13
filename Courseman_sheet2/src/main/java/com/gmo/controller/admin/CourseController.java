@@ -51,7 +51,9 @@ public class CourseController {
 			model.setViewName("admin/course/courseAddForm");
 			return model;
 		} else {
+			//kiểm tra course trong database
 			if (!courseService.checkCourse(course.getCode())) {
+				//set giáo viên cho course
 				course.setUserid(userService.get(course.getIdUser()));
 				courseService.create(course);
 				model.setViewName("redirect:/courseList");
@@ -88,13 +90,16 @@ public class CourseController {
 			model.setViewName("admin/course/courseEditForm");
 			return model;
 		} else {
+			// nếu không thay đổi gì vẫn update được
 			if (courseid.getCode().equalsIgnoreCase(course.getCode())) {
 				Users userid = userService.get(course.getIdUser());
 				course.setUserid(userid);
 				courseService.update(course);
 				model.setViewName("redirect:/courseList");
 				return model;
-			} else if (!courseService.checkCourse(course.getCode())) {
+			}
+			// kiểm tra mã Code trong database
+			else if (!courseService.checkCourse(course.getCode())) {
 				Users userid = userService.get(course.getIdUser());
 				course.setUserid(userid);
 				courseService.update(course);

@@ -63,11 +63,16 @@ public class UserController {
 			model.setViewName("admin/user/addUser");
 			return model;
 		} else {
+			// kiểm tra username trong database
 			if (!userService.checkUser(user.getUsername())) {
+				// kiểm tra 2 mật khẩu trùng khớp
 				if (user.getPassword().equals(user.getConfirmPassword())) {
+					// set quyền cho user
 					user.setRoleid(roleService.get(user.getIdRole()));
+					// mã hóa password
 					user.setPassword(encryptPass(user.getPassword()));
 					userService.create(user);
+					// tạo mới proflie cho user vừa tạo
 					Profile profile = new Profile(user.getUsername(), "10/10/1998", "Nam", user);
 					profileService.create(profile);
 					return new ModelAndView("redirect:/userList");
