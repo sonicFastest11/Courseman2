@@ -23,7 +23,7 @@ import com.gmo.model.Role;
 public class RoleDAOTest {
 
 	@Autowired
-	RoleDAO roleDAO;
+	GenericDAO<Role> roleDAO;
 	Role role;
 
 	@Before

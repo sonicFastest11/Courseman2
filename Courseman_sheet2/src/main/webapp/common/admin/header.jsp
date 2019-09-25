@@ -1,10 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
-
+<c:if test="${userLogin==0}">
     <a class="navbar-brand mr-1" href="trang-chu">CourseMan</a>
-
-    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+</c:if>
+<c:if test="${userLogin!=0}">
+    <a class="navbar-brand mr-1" href="home">CourseMan</a>
+</c:if>
+    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" >
       <i class="fas fa-bars"></i>
     </button>
 
@@ -28,8 +32,19 @@
           <i class="fas fa-user-circle fa-fw"></i>
         </a>
         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+             <c:if test="${userLogin!=0}">
+          <a class="dropdown-item" href="#">Welcome , ${name}</a> <a
+					class="dropdown-item" href="editProfile">Edit Profile</a>
+				<div class="dropdown-divider"></div>
+				<a class="dropdown-item" href="#" data-toggle="modal"
+					data-target="#logoutModal">Logout</a>
+           </c:if>  
+         <c:if test="${userLogin==0 }">
           <a class="dropdown-item" href="login">Login</a>
            <a class="dropdown-item" href="register">Register</a>
+            </c:if>
+            
+           
         </div>
       </li>
     </ul>

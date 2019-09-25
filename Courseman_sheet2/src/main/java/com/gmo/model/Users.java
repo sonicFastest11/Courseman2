@@ -35,7 +35,6 @@ public class Users implements Serializable {
 	@NotBlank(message = "required !!!")
 	private String password;
 
-	private String confirmPassword;
 
 	@ManyToOne(targetEntity = Role.class, fetch = FetchType.EAGER)
 	@JoinColumn(name = "roleid")
@@ -52,6 +51,8 @@ public class Users implements Serializable {
 
 	@OneToMany(mappedBy = "user", targetEntity = Enrolment.class)
 	private Set<Enrolment> enrolments;
+	@Transient
+	private String confirmPassword;
 
 	public Integer getIdRole() {
 		return idRole;

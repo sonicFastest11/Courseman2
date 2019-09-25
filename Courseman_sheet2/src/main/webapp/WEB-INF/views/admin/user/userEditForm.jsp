@@ -27,7 +27,7 @@
 <body id="page-top">
 
 	<!-- //header here -->
-	<jsp:include page="/common/admin/header2.jsp" />
+	<jsp:include page="/common/admin/header.jsp" />
 
 	<div id="wrapper">
 

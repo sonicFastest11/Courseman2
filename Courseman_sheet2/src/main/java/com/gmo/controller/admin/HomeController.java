@@ -2,8 +2,6 @@ package com.gmo.controller.admin;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -52,37 +50,20 @@ public class HomeController {
 	@RequestMapping(value = "/doLogin", method = RequestMethod.POST)
 	public ModelAndView checkLogin(@ModelAttribute("user") Users user, ModelAndView model, HttpServletRequest rq,
 			HttpSession session) throws Exception {
-		Map<String, String> hashMap = new HashMap<>();
 		// kiểm tra username và password
 		if (userService.checkLogin(user.getUsername(), encryptPass(user.getPassword()).concat("a"))) {
 			// lấy quyền của user
 			String role = userService.checkRole(user.getUsername()).getRoleid().getRole_name();
-			//lấy id của user
+			// lấy id của user
 			int userid = userService.checkRole(user.getUsername()).getId();
-			//truy cập trang chủ
-			if ("ADMIN".equals(userService.checkRole(user.getUsername()).getRoleid().getRole_name())) {
-				hashMap.put("loadallrole", "List of Roles");
-				hashMap.put("userList", "List of Users");
-				hashMap.put("courseList", "List of Courses");
-				hashMap.put("teacherList", "List of Teachers");
-				hashMap.put("enrolmentList", "List of Enrolments");
-				model.addObject("menu", hashMap);
-			} else {
-				hashMap.put("teachers", "List of Teachers");
-				hashMap.put("enrolments", "List of Enrolments");
-				hashMap.put("courses", "List of Courses");
-				model.addObject("menu", hashMap);
-			}
-			//dùng session để lưu user,name,menu
+			// dùng session để lưu user,name,menu
 			session.setAttribute("user", user);
 			session.setAttribute("userid", userid);
 			session.setAttribute("role", role);
-
 			session.setAttribute("name", user.getUsername());
-			session.setAttribute("menu", hashMap);
-			
-			//trả về trang chủ
-			model.setViewName("admin/home/home");
+
+			// trả về trang chủ
+			model.setViewName("redirect:/home");
 			return model;
 		} else {
 			model.setViewName("admin/home/login");
@@ -97,8 +78,7 @@ public class HomeController {
 		HttpSession session = rq.getSession();
 		session.removeAttribute("user");
 		session.removeAttribute("name");
-		session.removeAttribute("menu");
-		
+
 		return new ModelAndView("redirect:/trang-chu");
 	}
 
@@ -109,18 +89,40 @@ public class HomeController {
 	}
 
 	// mã hóa password
-		public static String encryptPass(String passwordMD5) throws Exception {
-			String password = null;
-			MessageDigest md = MessageDigest.getInstance("SHA-256");
-			byte[] hashInBytes = md.digest(passwordMD5.getBytes(StandardCharsets.UTF_8));
+	public static String encryptPass(String passwordMD5) throws Exception {
+		String password = null;
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		byte[] hashInBytes = md.digest(passwordMD5.getBytes(StandardCharsets.UTF_8));
 
-			// bytes to hex
-			StringBuilder sb = new StringBuilder();
-			for (byte b : hashInBytes) {
-				sb.append(String.format("%02x", b));
-			}
-			password = sb.toString();
-			return password;
+		// bytes to hex
+		StringBuilder sb = new StringBuilder();
+		for (byte b : hashInBytes) {
+			sb.append(String.format("%02x", b));
 		}
+		password = sb.toString();
+		return password;
+	}
 
+	@ModelAttribute("userLogin")
+	public int getUser(HttpSession session) {
+		int id = 0;
+		Users user = null;
+		user = (Users) session.getAttribute("user");
+		if (user != null)
+			id = (int) session.getAttribute("userid");
+		session.setAttribute("userLogin", id);
+		return id;
+	}
+
+	@ModelAttribute("roleId")
+	public String getRole(HttpSession session) {
+		String roleId = null;
+		Users user = null;
+		user = (Users) session.getAttribute("user");
+		if (user != null)
+			roleId = (String) session.getAttribute("role");
+		session.setAttribute("roleId", roleId);
+		return roleId;
+
+	}
 }

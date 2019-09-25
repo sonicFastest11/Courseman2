@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.gmo.model.Course;
-import com.gmo.model.Enrolment;
 import com.gmo.model.Profile;
 import com.gmo.model.Role;
 import com.gmo.model.Users;
@@ -31,10 +29,10 @@ import com.gmo.service.GenericService;
 
 @Controller
 public class UserController {
-	@Autowired
-	private GenericService<Enrolment> enrolmentService;
-	@Autowired
-	private GenericService<Course> courseService;
+//	@Autowired
+//	private GenericService<Enrolment> enrolmentService;
+//	@Autowired
+//	private GenericService<Course> courseService;
 	@Autowired
 	private GenericService<Users> userService;
 	@Autowired
@@ -71,7 +69,8 @@ public class UserController {
 					// set quyền cho user
 					user.setRoleid(roleService.get(user.getIdRole()));
 					// mã hóa password
-					user.setPassword(encryptPass(user.getPassword()));
+					user.setPassword(encryptPass(user.getPassword()).concat("a"));
+					// tạo mới user
 					userService.create(user);
 					// tạo mới proflie cho user vừa tạo
 					Profile profile = new Profile(user.getUsername(), "10/10/1998", "Nam", user);

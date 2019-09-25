@@ -12,19 +12,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.gmo.model.Course;
 import com.gmo.model.Enrolment;
-import com.gmo.model.Users;
 import com.gmo.service.GenericService;
 
 @Controller
 public class EnrolmentController {
 	@Autowired
 	private GenericService<Enrolment> enrolmentService;
-	@Autowired
-	private GenericService<Course> courseService;
-	@Autowired
-	private GenericService<Users> userService;
+//	@Autowired
+//	private GenericService<Course> courseService;
+//	@Autowired
+//	private GenericService<Users> userService;
 
 	public EnrolmentController() {
 		System.out.println("EnrolmentController()");

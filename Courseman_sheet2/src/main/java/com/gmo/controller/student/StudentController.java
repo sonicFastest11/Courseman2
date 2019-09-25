@@ -1,7 +1,7 @@
 package com.gmo.controller.student;
 
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,11 +63,13 @@ public class StudentController {
 				if (user.getPassword().equals(user.getConfirmPassword())) {
 					user.setRoleid(roleService.getDefaultRole(user.getIdRole()));
 					// mã hóa password
-					user.setPassword(encryptPass(user.getPassword()));
+					user.setPassword(encryptPass(user.getPassword()).concat("a"));
 					userService.create(user);
 					Profile profile = new Profile(user.getUsername(), "10/10/1998", "Nam", user);
 					profileService.create(profile);
-					return new ModelAndView("redirect:/login");
+					model.addObject("message", "successfully");
+					model.setViewName("redirect:/login");
+					return model;
 				} else {
 					model.setViewName("student/register");
 					model.addObject("message", "Password not match !!!");
@@ -140,16 +142,15 @@ public class StudentController {
 	// mã hóa password
 		public static String encryptPass(String passwordMD5) throws Exception {
 			String password = null;
-			MessageDigest md = MessageDigest.getInstance("MD5");
-			md.update(passwordMD5.getBytes());
-			byte[] byteData = md.digest();
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			byte[] hashInBytes = md.digest(passwordMD5.getBytes(StandardCharsets.UTF_8));
 
-			StringBuilder sb = new StringBuilder(32);
-			for (byte b : byteData) {
-				sb.append(String.format("%02x", b & 0xff));
-				password = sb.toString();
-
+			// bytes to hex
+			StringBuilder sb = new StringBuilder();
+			for (byte b : hashInBytes) {
+				sb.append(String.format("%02x", b));
 			}
+			password = sb.toString();
 			return password;
 		}
 }
